@@ -1,0 +1,879 @@
+I"��<p>这些面试题包含哪些内容？这份面试题包含了 19 个模块：Java 基础、容器、多线程、反射、对象拷贝、Java Web、异常、网络、设计模式、Spring/Spring MVC、Spring Boot/Spring Cloud、Hibernate、Mybatis、RabbitMQ、Kafka、Zookeeper、MySql、Redis、JVM 等等。</p>
+
+<h1 id="一java-基础">一、Java 基础</h1>
+
+<h3 id="1jdk-和-jre--jvm有什么区别"><strong>1.JDK 和 JRE  jvm有什么区别？</strong></h3>
+
+<p>jdk是提供给java开发使用的，其中包含jre  、jre是java运行环境，包含核心类库等  jre 包含 jvm     前边讲过jvm可以跨平台 怎么跨平台 是不是靠着jvm运行java代码 jre是运行环境 里边肯定含有jvm</p>
+
+<hr />
+
+<h3 id="2-和-equals-的区别是什么"><strong>2.== 和 equals 的区别是什么</strong></h3>
+
+<p><strong>==操作符的作用</strong></p>
+
+<p>1、用于基本数据类型的比较，局部变量存在于栈中，<strong>类变量（静态成员变量</strong>）和成员变量存在于堆中</p>
+
+<p>public static int a = 1;// <strong>类变量</strong></p>
+
+<p>public int b = 2;// <strong>成员变量</strong></p>
+
+<p>​	public void method() {</p>
+
+<p>​	 int c = 3;// <strong>局部变量</strong></p>
+
+<p>​	int d = 3;// <strong>局部变量</strong></p>
+
+<p>c = 4;</p>
+
+<p>}</p>
+
+<p><strong>2.equals的作用：</strong></p>
+
+<p>用于判断两个变量是否是对同一个对象的引用，即堆中的内容是否相同，返回值为布尔类型</p>
+
+<p><strong>3.特殊的类（string）</strong>String类型比较不同对象内容是否相同，应该用equals，因为==用于比较引用类型和比较基本数据类型时具有不同的功能。</p>
+
+<p>​     String x = “张三”    String x1 = “张三”       <strong>== 和equal 判断的内存地址</strong></p>
+
+<p>​    String s1 =new String(“abc”);String s2=new String(“abc”);  <strong>==判断对象的内存地址，使用equal判断的是值abc</strong></p>
+
+<p><strong>概念：</strong>String x = “张三” ，Java 虚拟机会将其分配到常量池中，在常量池中检索是否已经有值,没有就创建一个，有那么就将值的地址赋给变量，此过程创建了1个对象</p>
+
+<p><strong>概念：</strong>String str=new String(“abc”);str在栈中，new的对象都存在在堆中，因此，new String(“abc”)在堆中创建了对象，并将其赋值给str，即 String str = ，这么一来，在字符串常量池中存在字符串“abc”，在堆中存在对象“abc”，此过程创建了2个对象</p>
+
+<p><strong>概念：</strong> Person  p =new  Person()  定义了一个person类的对象p并对它进行实例化， 这个 p所在栈中,比如分配的内存地址是AG84300 ,<strong>存</strong>的就是实例化对象在堆当中的地址，比如Be95000</p>
+
+<hr />
+
+<h3 id="3jvm内存分布"><strong>3.jvm内存分布</strong></h3>
+
+<p><img src="https://images0.cnblogs.com/blog2015/471788/201507/082300018463120.png" alt="jvm虚拟内存分布" /></p>
+
+<p><strong>程序计数器</strong>是jvm执行程序的流水线，存放一些跳转指令。</p>
+
+<p>​     <strong>本地方法栈</strong>是jvm调用操作系统方法所使用的栈。</p>
+
+<p>​     <strong>虚拟机栈</strong>是jvm执行java代码所使用的栈。</p>
+
+<p>​     <strong>方法区</strong>存放了一些常量、静态变量、类信息等，可以理解成class文件在内存中的存放位置。</p>
+
+<p>​     <strong>虚拟机堆</strong>是jvm执行java代码所使用的堆。</p>
+
+<p>栈：基础数据类型、对象的引用</p>
+
+<p>堆：所有的对象（包括自己定义对象和字符串对象）</p>
+
+<p>方法区：1.7之前所有的class和static变量 1.7之后存放在堆区</p>
+
+<p>Class对象和static变量是存放在堆区的，不是方法区，<strong>类的元数据（元数据并不是类的Class对象！Class对象是加载的最终产品，类的方法代码，变量名，方法名，访问权限，返回值等等都是在方法区的）</strong>才是存在方法区的</p>
+
+<h3 id="什么是常量池"><strong>什么是常量池？</strong></h3>
+
+<p><strong>运行时常量池</strong>，则是jvm虚拟机在完成类装载操作后　</p>
+
+<p>JDK1.7 及之后版本的 JVM 已经将运行时常量池从方法区中移了出来，在 Java 堆（Heap）中开辟了一块区域存放运行时常量池</p>
+
+<p>：<strong>静态常量池</strong> ：即*.class文件中的常量池，不仅仅包含字符串(数字)字面量，包含类、方法的信息，占用class文件绝大部分空间</p>
+
+<p>new String（）创建的字符串不放入常量池中</p>
+
+<hr />
+
+<h3 id="4两个对象的-hashcode相同则-equals也一定为-true对吗"><strong>4.两个对象的 hashCode()相同，则 equals()也一定为 true，对吗？</strong></h3>
+
+<p>1.概念了解  hashCode()  和 equals() 是超类java.lang.Object中两个重要的方法，   Object类是类继承结构的基础，所以是每一个类的父类。所有的对象，包括数组，都实现了在Object类中定义的方法</p>
+
+<p>2<strong>.答案</strong>        答案肯定是不一定。同时反过来equals为true，hashCode也不一定相同。        类的hashCode方法和equals方法都可以重写，返回的值完全在于自己定义。        hashCode()返回该对象的哈希码值；equals()返回两个对象是否相等。</p>
+
+<hr />
+
+<h3 id="5final-在-java-中有什么作用"><strong>5.final 在 java 中有什么作用？</strong></h3>
+
+<p>​     final作为Java中的关键字可以用于三个地方。用于修饰类、类属性和类方法。
+    凡是引用final关键字的地方皆不可修改！</p>
+
+<p>(1)修饰类：表示该类不能被继承；</p>
+
+<p>(2)修饰方法：表示方法不能被重写；</p>
+
+<p>​    (3)修饰变量：值不能被修改（也就是常量）</p>
+
+<hr />
+
+<h3 id="6java-中的-mathround-15-等于多少">6.java 中的 Math.round(-1.5) 等于多少？</h3>
+
+<p>​      round() ：返回四舍五入</p>
+
+<p>​	答案 -1        范围： 1.6到  2.4 返回 2     - 1.6到 -2.4 返回 -2       2.5 和-2.5其实就已		经是3和-3了</p>
+
+<hr />
+
+<h3 id="7-java-中操作字符串都有哪些类它们之间有什么区别">7 java 中操作字符串都有哪些类？它们之间有什么区别？</h3>
+
+<p>String、StringBuffer、StringBuilder</p>
+
+<ul>
+  <li>String : final修饰，String类的方法都是返回new String。即对String对象的任何改变都不影响到原对象，对字符串的修改操作都会生成新的对象。</li>
+  <li>StringBuffer : 对字符串的操作的方法都加了synchronized，保证线程安全。</li>
+  <li>StringBuilder : 不保证线程安全，在方法体内需要进行字符串的修改操作，可以new StringBuilder对象，调用StringBuilder对象的append、replace、delete等方法修改字符串</li>
+</ul>
+
+<hr />
+
+<h3 id="8如何将字符串反转">8.如何将字符串反转？</h3>
+
+<p>使用 StringBuilder 或 StringBuffer 的 reverse 方法，本质都调用了它们的父类 AbstractStringBuilder 的 reverse 方法实现。（JDK1.8）</p>
+
+<hr />
+
+<h3 id="9string-类的常用方法都有那些">9.String 类的常用方法都有那些？</h3>
+
+<ul>
+  <li>indexOf()   返回指定字符得索引</li>
+  <li>charAt()   返回指定索引处得字符</li>
+  <li>repalce()    字符串替换</li>
+  <li><strong>trim()      去除字符串两端的空白</strong></li>
+  <li>split()   分割字符串   返回分割后的字符串数组</li>
+  <li>getBytes()   返回字符串的byte类型数组</li>
+  <li><strong>length() 返回字符串的长度</strong></li>
+  <li>toLowerCase()  字符串转小写</li>
+  <li>toUpperCase()  字符串转大写</li>
+  <li>substring()   截取字符串</li>
+  <li><strong>equals()  字符串比较</strong></li>
+</ul>
+
+<hr />
+
+<h3 id="10和的区别是">10&amp;和&amp;&amp;的区别是？</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&amp;　不管左边的条件是否正确，右边都执行
+&amp;&amp;　左边条件正确时，才执行右面，不正确时，就不执行，就效率而言，这个更好
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="11--八大基本类型-string是引用类型">11  八大基本类型 String是引用类型?</h3>
+
+<p><img class="ikqb_img" src="https://iknow-pic.cdn.bcebos.com/48540923dd54564e39553bd8bdde9c82d1584f1b?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" esrc="https://iknow-pic.cdn.bcebos.com/48540923dd54564e39553bd8bdde9c82d1584f1b?x-bce-process=image/resize,m_lfit,w_450,h_600,limit_1" style="cursor: auto;" /></p>
+
+<hr />
+
+<h3 id="12类变量-和-成员变量--局部变量">12类变量 和 成员变量  局部变量</h3>
+
+<p>局部变量存在于栈中，<strong>类变量（静态成员变量</strong>）和<strong>成员变量</strong>存在于堆中</p>
+
+<p>方法体外:成员变量</p>
+
+<p>方法体内：局部变量</p>
+
+<p><strong>成员变量</strong></p>
+
+<p>①实例变量 ：不是static修饰</p>
+
+<p>②类变量（静态变量） static修饰 ：不需要类实例化对象就可以使用  直接通过类名.属性这样方式调用</p>
+
+<p><strong>局部变量：</strong></p>
+
+<p>①形参（参数列表） ②方法局部变量 ③代码块局部变量</p>
+
+<hr />
+
+<p>###</p>
+
+<h1 id="二-面向对象">二 面向对象</h1>
+
+<h3 id="1-面向过程-和-面向对象区别">1 面向过程 和 面向对象区别：</h3>
+
+<p><strong>面向过程：</strong>比如张三打篮球 ，还有李四打篮球 那么程序设定张三打完篮球后 从头开始按照李四打篮球再写一遍</p>
+
+<p><strong>面向对象：</strong>人的对象， 人运动的动作 ， 运动的器械 这三个对象 ，实例化 一个张三对象，对象有一个打篮球动作 ，器械是篮球 ，  在实例化一个李四对象，对象有一个踢足球动作 ，器械是足球</p>
+
+<p><strong>这样对比</strong>：面向对象能够更好再抽象的层面来分析 ，在程序实现上可以极大的赋予之前代码，这些是面向过程很难实现的</p>
+
+<p>类 =汽车设计图    对象：实实在在的汽车 ，</p>
+
+<p>面向对象程序设计核心是<strong>类的设计</strong>：就是定义类中的成员（变量 方法）</p>
+
+<hr />
+
+<h3 id="2抽象类必须要有抽象方法吗-抽象类概念----">2.抽象类必须要有抽象方法吗？ 抽象类概念    ？</h3>
+
+<p><strong>不必须：</strong></p>
+
+<p>一个类包含抽象方法， 则该类必须是抽象类 。</p>
+
+<p><strong>概念：</strong></p>
+
+<p>比如有狗类 、鸟类  、鱼类 等等， 父类中有个方法mover，  因为狗要跑，鸟要飞 动作不一样，在父类不能给他具体实现，所以父类和其方法都是抽象化处理，抽象化处理就是不写具体实现(方法体）然后具体写在某个子类上，我去继承父类的时候，我在把这个方法体实现</p>
+
+<hr />
+
+<h3 id="3普通类和抽象类有哪些区别">3.普通类和抽象类有哪些区别？</h3>
+
+<p>抽象类不能被实例化抽象类可以有抽象方法，抽象方法只需申明，无需实现含有抽象方法的类必须申明为抽象类抽象类的子类必须实现抽象类中所有抽象方法，否则这个子类也是抽象类抽象方法不能被声明为静态抽象方法不能用 private 修饰抽象方法不能用 final 修饰</p>
+
+<hr />
+
+<h3 id="13方法的参数传递--值传递和引用传递">13.方法的参数传递？  值传递和引用传递？</h3>
+
+<p>形参：方法声明时的参数；</p>
+
+<p>实参：方法调用时传给形参的参数值</p>
+
+<p>基础数据类型参数传递方式只有一种：值传递</p>
+
+<p><strong>值传递：</strong>传递参数的过程中，先将实参的值赋值到形参上，然后再在栈中开辟一个内存，将该值赋给新的变量。</p>
+
+<p><strong>引用数据类型参数传递，</strong>原来的实例化的对象和新建立的实例化对象都指向同一个对象，因此引用对象值的改变会影响到new出来的对象。</p>
+
+<hr />
+
+<h3 id="4-三大特性-封装-继承-多态">4 三大特性 封装 继承 多态？</h3>
+
+<p><strong>封装概念</strong>: 隐藏内部功能的具体实现，只保留和外部交流数据的接口。例：汽车与发动机，不必知道发动机的实现原理，只需使用汽车给予的接口，插入钥匙。</p>
+
+<p><strong>为什么需要封装？</strong>使用者对类内部定义的属性，的直接操作会导致数据的错误，造成混乱和安全问题</p>
+
+<p><strong>继承概念</strong>: 一个对象可以从它的父类继承所有的通用的属性和方法，并在无需重新编写原来的类的情况下对这些功能进行扩展；最大的好处是实现代码的高效重用。</p>
+
+<p><strong>为什么需要继承？</strong>多个类中存在相同的属性和行为，将这些共性东西抽出来形成父类，实际需求的子类在继承父类基础上写自己特有代码即可</p>
+
+<p><strong>多态概念</strong>：编译时类型和运行时类型不一样，就会产生多态</p>
+
+<p><strong>编译时类型和运行时类型区别：</strong></p>
+
+<p>Person person = new student();编译时类型是Person，当new了一个对象之后，堆内存中产生了一个Student对象，此时的类型就是运行时类型，也就是Student类型了。</p>
+
+<p><strong>向上转型 向下转型</strong></p>
+
+<p>向上转型：<strong>子类对象变为父类对象，语法： 父类 父类对象 = 子类实例， 自动；</strong></p>
+
+<p>向下转型：**父类对象变为子类对象，语法： 子类 子类对象 = （子类）父类实例，强制</p>
+
+<hr />
+
+<h3 id="5-重载和重写区别">5 重载和重写区别？</h3>
+
+<p>1）重载在同一个类，重写在继承关系的父子类；</p>
+
+<p>（2）重写方法名，返回值，参数列表相同，重载方法名相同，参数列表 不同（个数，顺序，类型），与返回值无关；</p>
+
+<p>（3）重写的方法修饰符大于等于父类的方法，重载和修饰符无关</p>
+
+<hr />
+
+<h3 id="6-抽象类和接口区别">6 抽象类和接口区别？</h3>
+
+<p><strong>抽象类概念：</strong></p>
+
+<p>比如有狗类 、鸟类  、鱼类 等等， 父类中有个方法mover，  因为狗要跑，鸟要飞 动作不一样，在父类不能给他具体实现，所以父类和其方法都是抽象化处理，抽象化处理就是不写具体实现(方法体）然后具体写在某个子类上，我去继承父类的时候，我在把这个方法体实现</p>
+
+<p><strong>接口的概念：接口是一类动作的集合</strong></p>
+
+<p><strong>用java描述会唱歌的厨子是个老师？</strong> 光抽象类实现不合逻辑 可能你会先 老师 继承 厨子类 厨子类 继承 歌唱家类 歌唱家继承人类   你感觉厨子继承歌唱家合适吗？ 这种多层继承不合逻辑</p>
+
+<p>答：应该先写一个老师类  因为我这个老师是个人所以 继承 人类  然后我做一个 厨艺接口，然后在创建一个歌唱接口（我描述厨艺和歌唱，而不是厨子和歌唱家 因为接口是一类动作的集合)  然后再实现这个歌唱和厨艺的接口    这样的话我这个类本质上是一个老师，但是他有其他的技能 唱歌 厨艺</p>
+
+<hr />
+
+<h1 id="三-异常">三 异常</h1>
+
+<h3 id="1throw-和-throws-的区别">1.throw 和 throws 的区别？</h3>
+
+<p>throw 作用在方法内，表示抛出具体异常，由方法体内的语句处理。</p>
+
+<p>throws：作用在方法的声明上，表示如果抛出异常，则由该方法的调用者来进行异常处理</p>
+
+<hr />
+
+<h3 id="2finalfinallyfinalize-有什么区别">2.final、finally、finalize 有什么区别？</h3>
+
+<h3 id="final-"><strong>①final ：</strong></h3>
+
+<p>​			(1)修饰类：表示该类不能被继承；   (2)修饰方法：表示方法不能被重写；</p>
+
+<p>​			(3)修饰变量：值不能被修改（也就是常量）</p>
+
+<h3 id="--try-catch--finallyfai米粒"><strong>②  try-catch -finally（fai米粒）</strong></h3>
+
+<p>​	<strong>try</strong>：用try来括住一段可能出现异常的代码段</p>
+
+<p>​	<strong>catch:</strong>不知道捕获的是什么类型异常时候，可以直接使用异常父类 Exceptionfinally:</p>
+
+<p>​	<strong>finally</strong> 无论怎么样都会执行</p>
+
+<p>​	<strong>顺序</strong>：try出现异常 执行catch 然后 finally</p>
+
+<h3 id="finalizefai米莱斯是方法名"><strong>③、finalize（</strong>fai米莱斯）：是方法名。**</h3>
+
+<p>java技术允许使用finalize()方法在垃圾收集器将对象从内存中<strong>清除之前</strong>做必要的清理工作。</p>
+
+<p>finalize()的作用往往被认为是用来做最后的资源回收。</p>
+
+<p>finalize是在Object类中定义的，因此，所有的类都继承了它。子类可以覆盖finalize()方法，来整理系统资源或者执行其他清理工作。</p>
+
+<p>​</p>
+
+<h3 id="3try-catch-finally-中如果-catch-中-return-了finally-还会执行吗">3.try-catch-finally 中，如果 catch 中 return 了，finally 还会执行吗</h3>
+
+<p>会，return 发现还有finally 方法，然后去执行finally</p>
+
+<p>如果finally 有ruturn，就会直接返回结果</p>
+
+<p>###</p>
+
+<hr />
+
+<h1 id="四-泛型">四 泛型</h1>
+
+<h3 id="1什么是泛型"><strong>1.什么是泛型</strong></h3>
+
+<p>当类中要操作的引用数据类型不确定的时候，使用泛型来完成约束，同时保证安全性，</p>
+
+<p><strong>使用分为：</strong>泛型类 、泛型 方法、 泛型接口</p>
+
+<p>如果程序在编译时没用发出警告，运行时就不会产生classCaseException（类型转换异常），同时代码更整洁</p>
+
+<hr />
+
+<h3 id="2泛型通配符">2..泛型通配符</h3>
+
+<p>不确定集合中元素具体数据类型使用 ？表示所有类型</p>
+
+<hr />
+
+<h3 id="3什么是泛型中的限定通配符和非限定通配符-">3.什么是泛型中的限定通配符和非限定通配符 ?</h3>
+
+<p><strong>&lt;?&gt;表示了非限定通配符</strong>，因为&lt;?&gt;可以用任意类型来替代</p>
+
+<p><strong>有两种限定通配符，</strong></p>
+
+<p>一种是&lt;? extends T&gt;它通过确保类型必须是T的子类、也可以是本身</p>
+
+<p>一种是&lt;? super T&gt;它通过确保类型必须是T的父类来、也可以是本身</p>
+
+<hr />
+
+<h3 id="五-容器集合">五 容器（集合）</h3>
+
+<p>引用：https://blog.csdn.net/zhangqunshuai/article/details/80660974</p>
+
+<h3 id="1java-容器都有哪些">1.java 容器都有哪些？</h3>
+
+<p><img src="https://img-blog.csdn.net/20180612094225630?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3poYW5ncXVuc2h1YWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="" /></p>
+
+<ul>
+  <li>List , Set,  Map都是接口，前两个继承至Collection接口，Map为独立接口</li>
+  <li>Set下有HashSet，LinkedHashSet，TreeSet</li>
+  <li>List下有ArrayList，Vector，LinkedList</li>
+  <li>Map下有Hashtable，LinkedHashMap，HashMap，TreeMap</li>
+  <li>Collection接口下还有个Queue（翻译Q）接口，有PriorityQueue类</li>
+</ul>
+
+<hr />
+
+<h3 id="2collection-和-collections-有什么区别">2.Collection 和 Collections 有什么区别？</h3>
+
+<p>Collection 是集合的接口</p>
+
+<p>Collections 是集合的工具类，定义了许多操作集合的静态方法 排序 查询 修改 反转等操作</p>
+
+<hr />
+
+<h3 id="3-list--set--map-区别">3 list  set  map 区别？</h3>
+
+<h4 id="collection-"><strong>①Collection ：</strong></h4>
+
+<p>—  <strong>List 有序,可重复</strong></p>
+
+<p>** 同步概念**,由于线程的同步必然要影响性能，所以不同步性能好</p>
+
+<ul>
+  <li>
+    <p><strong>ArrayList</strong>
+<strong>优点:</strong> 底层数据结构是数组，支持快速高效随机访问，通过元素序号快速查询获取元素，<strong>查询快，增删慢</strong>。</p>
+
+    <p><strong>缺点:</strong> 线程不安全，效率高</p>
+  </li>
+  <li>
+    <p><strong>同步:</strong>不同步</p>
+
+    <p>​</p>
+  </li>
+  <li>
+    <p>Vector(歪 提 儿)
+<strong>优点:</strong> 底层数据结构是数组，查询快，增删慢。
+<strong>缺点:</strong> 线程安全，效率低</p>
+  </li>
+  <li>
+    <p><strong>同步：</strong>Vector的方法都是同步的</p>
+
+    <p>​</p>
+  </li>
+  <li>
+    <p>LinkedList
+<strong>优点:</strong> 底层数据结构是链表，<strong>查询慢，增删快</strong>。
+<strong>缺点:</strong> 线程不安全，效率高，不支持快速高效随机访问</p>
+  </li>
+  <li>
+    <p><strong>同步:</strong>不同步 ,。</p>
+
+    <p>​</p>
+  </li>
+</ul>
+
+<p>—<strong>Set    无序,唯一</strong></p>
+
+<ul>
+  <li><strong>HashSet</strong>
+底层数据结构是哈希表。(无序,唯一)
+如何来保证元素唯一性?
+1.依赖两个方法：hashCode()和equals()</li>
+  <li><strong>LinkedHashSet</strong>
+底层数据结构是链表和哈希表。(FIFO插入有序,唯一)
+1.由链表保证元素有序
+2.由哈希表保证元素唯一</li>
+  <li><strong>TreeSet</strong>
+底层数据结构是红黑树。(唯一，有序)
+\1. 如何保证元素排序的呢?
+自然排序：TreeSet会调用compateTo（object obj）方法来比较元素之间大小关系，将集合元素升序排列
+比较器排序
+2.如何保证元素唯一性的呢?
+根据比较的返回值是否是0来决定</li>
+</ul>
+
+<p><strong>针对Collection集合我们到底使用谁呢?(掌握)</strong></p>
+
+<blockquote>
+  <p>唯一吗?</p>
+
+  <blockquote>
+    <p>是：Set</p>
+
+    <blockquote>
+      <p>排序吗?</p>
+
+      <blockquote>
+        <p>是：TreeSet或LinkedHashSet
+否：HashSet
+如果你知道是Set，但是不知道是哪个Set，就用HashSet。</p>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <p>否：List</p>
+
+  <blockquote>
+    <p>要安全吗?</p>
+
+    <blockquote>
+      <p>是：Vector(歪 提 儿)
+否：ArrayList或者LinkedList</p>
+
+      <blockquote>
+        <p>查询多：ArrayList
+增删多：LinkedList
+如果你知道是List，但是不知道是哪个List，就用ArrayList。</p>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <p>如果你知道是Collection集合，但是不知道使用谁，就用ArrayList。
+如果你知道用集合，就用ArrayList。</p>
+</blockquote>
+
+<h4 id="map"><strong>②map</strong></h4>
+
+<p><img src="https://img-blog.csdn.net/20180612135157564?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3poYW5ncXVuc2h1YWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /></p>
+
+<p>Map接口有三个比较重要的实现类，分别是HashMap、TreeMap和HashTable。</p>
+
+<ul>
+  <li>TreeMap是有序的，HashMap和HashTable是无序的。</li>
+  <li>TreeMap 不同步  、HashMap的方法不同步     Hashtable的方法是同步的</li>
+  <li>这是两者最主要的区别。</li>
+</ul>
+
+<p><strong>这就意味着:</strong></p>
+
+<ul>
+  <li>HashMap不是线程安全的，Hashtable是线程安全的，由于非线程安全，效率上可能高于Hashtable。</li>
+  <li>Hashtable效率较低，HashMap效率较高，
+如果对同步性或与遗留代码的兼容性没有任何要求，建议使用HashMap。</li>
+  <li>查看Hashtable的源代码就可以发现，除构造函数外，Hashtable的所有 public 方法声明中都有 synchronized(型口耐斯特)关键字，而HashMap的源码中则没有。</li>
+  <li>Hashtable不允许null值，HashMap允许null值（key和value都允许）</li>
+  <li>父类不同：Hashtable的父类是Dictionary，HashMap的父类是AbstractMap</li>
+</ul>
+
+<hr />
+
+<h3 id="4如何决定使用-hashmap-还是-treemap-">4.如何决定使用 HashMap 还是 TreeMap ？</h3>
+
+<h3 id="treemap"><strong>TreeMap：</strong></h3>
+
+<p><strong>TreeMap</strong>的实现是基于红黑树结构。适用于按自然顺序或自定义顺序遍历键（key）、</p>
+
+<h4 id="hash表结构-散列法元素特征转变为数组下标的方法">hash表结构 散列法：元素特征转变为数组下标的方法。</h4>
+
+<p>散列法：元素特征转变为数组下标的方法</p>
+
+<h3 id="hashmap"><strong>HashMap</strong>：</h3>
+
+<p>HashMap是基于哈希表（HashTable）实现的，哈希表是由数组和链表共同构成的一种结构</p>
+
+<p>在HashMap底层使用数组加（链表或红黑树）的结构完美的解决了数组和链表的问题，使得查询和插入，删除的效率都很高。</p>
+
+<p><strong>结论：由于HashMap有更好的性能，所以大多不需要排序的时候我们会使用HashMap。</strong></p>
+
+<h4 id="hashmap死锁死循环怎么回事">②HashMap死锁（死循环）怎么回事</h4>
+
+<p>HashMap会造成死锁，因为HashMap是线程非安全的，多并发的情况容易造成死锁，若要高并发推荐使用ConcurrentHashMap。这里的加了锁。</p>
+
+<h4 id="hashmap中的put和get方法"><strong>③HashMap中的put()和get()方法</strong></h4>
+
+<p><strong>（1)HashMap中能put两个相同key吗？为什么？</strong></p>
+
+<p>key 不可以相同       values可以</p>
+
+<p>添加：map.put(“b”,1)          根据key取值System.out.println(map.get(“b”));</p>
+
+<p>#####</p>
+
+<p><strong>(2)HashMap key 和values可以为null吗?为什么？</strong></p>
+
+<p>可以为null ,但会出现写问题</p>
+
+<p><strong>（3)实现原理：</strong></p>
+
+<p><strong>①、map.put(k,v)实现原理</strong></p>
+
+<p>第一步首先将k,v封装到Node对象当中（节点）。</p>
+
+<p>第二步它的底层会调用K的hashCode()方法得出hash值。</p>
+
+<p>第三步通过哈希表函数/哈希算法，将hash值转换成数组的下标，下标位置上如果没有任何元素，就把Node添加到这个位置上。如果说下标对应的位置上有链表。此时，就会拿着k和链表上每个节点的k进行equal。如果所有的equals方法返回都是false，那么这个新的节点将被添加到链表的末尾。如其中有一个equals返回了true，那么这个节点的value将会被覆盖。</p>
+
+<p><strong>②、map.get(k)实现原理</strong></p>
+
+<p>第一步：先调用k的hashCode()方法得出哈希值，并通过哈希算法转换成数组的下标。</p>
+
+<p>第二步：通过上一步哈希算法转换成数组的下标之后，在通过数组下标快速定位到某个位置上。重点理解如果这个位置上什么都没有，则返回null。如果这个位置上有单向链表，那么它就会拿着参数K和单向链表上的每一个节点的K进行equals，如果所有equals方法都返回false，则get方法返回null。如果其中一个节点的K和参数K进行equals返回true，那么此时该节点的value就是我们要找的value了，get方法最终返回这个要找的value。</p>
+
+<p><strong>③、为什么放在hashMap集合key部分的元素需要重写equals方法？</strong></p>
+
+<p>因为equals默认比较是两个对象内存地址</p>
+
+<hr />
+
+<h3 id="5treeset-linkedhashset-and-hashset-的区别">5.TreeSet, LinkedHashSet and HashSet 的区别</h3>
+
+<blockquote>
+  <ul>
+    <li>TreeSet, LinkedHashSet and HashSet 在java中都是实现Set的数据结构</li>
+  </ul>
+</blockquote>
+
+<ul>
+  <li>TreeSet的主要功能用于排序</li>
+  <li>LinkedHashSet的主要功能用于保证FIFO即有序的集合(先进先出)</li>
+  <li>HashSet只是通用的存储数据的集合</li>
+</ul>
+
+<blockquote>
+  <p><strong>2. 相同点</strong></p>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Duplicates elements: 因为三者都实现Set interface，所以三者都不包含duplicate elements</li>
+    <li>Thread safety: 三者都不是线程安全的，如果要使用线程安全可以Collections.synchronizedSet()</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>3. 不同点</strong></p>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Performance and Speed: HashSet插入数据最快，其次LinkHashSet，最慢的是TreeSet因为内部实现排序</li>
+    <li>Ordering: HashSet不保证有序，LinkHashSet保证FIFO即按插入顺序排序，<strong>TreeSet安装内部实现排序，也可以自定义排序规则</strong></li>
+    <li>null:HashSet和LinkHashSet允许存在null数据，但是TreeSet中插入null数据时会报NullPointerException</li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h3 id="6array和arraylist的区别">6.Array和ArrayList的区别</h3>
+
+<ol>
+  <li>
+    <p>Array类型的变量在声明的同时必须进行实例化并且指定大小，创建后的数组大小是固定的</p>
+
+    <p>ArrayList可以只是先声明，ArrayList的大小可以动态指定，其大小可以在初始化时指定，也可以不指定</p>
+
+    <p>如：int[] array = new array[3];       ArrayList myList = new ArrayList();</p>
+  </li>
+</ol>
+
+<p>2.Array只能存储<strong>类型相同</strong>的对象，object[]的数组除外，而ArrayList可以存储<strong>任何不同类型</strong>的对象。</p>
+
+<p>3.Array不能够随意添加和删除其中的项，而ArrayList可以在任意位置插入和删除项</p>
+
+<p><strong>Array和ArrayList的相似点</strong></p>
+
+<p>1 都具有索引(index),即可以通过index来直接获取和修改任意项。</p>
+
+<p>2 他们所创建的对象都放在托管<strong>堆</strong>中。</p>
+
+<p>###</p>
+
+<hr />
+
+<p>###</p>
+
+<h3 id="7-迭代器-iterator-是什么">7. <strong>.迭代器 Iterator 是什么？</strong></h3>
+
+<ul>
+  <li>首先说一下迭代器模式，它是 Java 中常用的设计模式之一。用于顺序访问集合对象的元素，无需知道集合对象的底层实现。</li>
+  <li>Iterator 是可以遍历集合的对象，为各种容器提供了公共的操作接口，隔离对容器的遍历操作和底层实现，从而解耦。</li>
+  <li>缺点是增加新的集合类需要对应增加新的迭代器类，迭代器类与集合类成对增加。</li>
+</ul>
+
+<hr />
+
+<h3 id="8怎么确保一个集合不能被修改">8.怎么确保一个集合不能被修改？</h3>
+
+<h5 id="工具类-collections-unmodifiablecollectioncollection-c-方法">工具类 Collections. unmodifiableCollection(Collection c) 方法</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        Collection&lt;Integer&gt; readOnlyList = Collections.unmodifiableCollection(list);
+        readOnlyList.add(4); // 会报错
+123456
+</code></pre></div></div>
+
+<p>报错如下:</p>
+
+<hr />
+
+<h3 id="六-数据结构数组-链表-红黑树-哈希表">六 数据结构（数组 链表 红黑树 哈希表）</h3>
+
+<h3 id="1数组特点"><strong>1.数组特点</strong></h3>
+
+<p>存储区间是连续，且占用内存严重，空间复杂也很大，时间复杂为O（1）。</p>
+
+<p>优点：是随机读取效率很高，原因数组是连续（随机访问性强，查找速度快）。</p>
+
+<p>缺点：插入和删除数据效率低，因插入数据，这个位置后面的数据在内存中要往后移的，且大小固定不易动态扩展。</p>
+
+<h3 id="2链表特点"><strong>2.链表特点</strong>：</h3>
+
+<p>区间离散，占用内存宽松，空间复杂度小，时间复杂度O(N)。</p>
+
+<p>优点：插入删除速度快，内存利用率高，没有大小固定，扩展灵活。</p>
+
+<p>缺点：不能随机查找，每次都是从第一个开始遍历（查询效率低）</p>
+
+<h3 id="3红黑树"><strong>3.红黑树</strong></h3>
+
+<p>因为链表中元素太多的时候会影响查找效率，所以当链表的元素个数达到8的时候使用链表存储就转变成了使用红黑树存储，原因就是<strong>红黑树是平衡二叉树，在查找性能方面比链表要高</strong>.</p>
+
+<h3 id="4平衡二叉树"><strong>4.平衡二叉树</strong></h3>
+
+<h3 id="5哈希表"><strong>5.哈希表</strong></h3>
+
+<p>是根据关键码值(Key value)而直接进行访问的<a href="https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/1450">数据结构</a>。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做<strong>散列函数（哈希函数）</strong>，存放记录的<a href="https://baike.baidu.com/item/%E6%95%B0%E7%BB%84/3794097">数组</a>叫做散列表（哈希表）</p>
+
+<p>哈希表<strong>查询效率高和插入删除效率也高，</strong>是由数组和链表共同构成的一种结构</p>
+
+<p>最典型的的例子就是<strong>字典</strong>，，如果我想要获取“按”字详细信息，我肯定会去根据拼音an去查找 拼音索引（当然也可以是偏旁索引），我们首先去查an在字典的位置，查了一下得到“安”，</p>
+
+<p>在公式里面，就是通过key去查找 f(key)</p>
+
+<p>按就是关键字（key），f（）就是字典索引，也就是哈希函数，查到的页码4就是<strong>哈希值</strong></p>
+
+<p><strong>哈希算法</strong></p>
+
+<p>哈希算法是通过一个哈希函数，将一段数据（也包括字符串、较大的数字等）转化为能够用变量表示或是直接就可作为数组下标的数字，这样转化后的数值我们称之为哈希值， 也就是算出一个数来代表一个字符串。</p>
+
+<p>我们通过哈希值从而实现很快地查找和匹配，</p>
+
+<h4 id="哈希冲突哈希碰撞">哈希冲突（哈希碰撞）</h4>
+
+<p>但是问题又来了，我们要查的是“按”，而不是“安，但是他们的拼音都是一样的。也就是通过关键字按和关键字安可以映射到一样的字典页码4的位置，这就是哈希冲突（也叫哈希碰撞），在公式上表达就是key1≠key2，但f(key1)=f(key2)。冲突会给查找带来麻烦，你想想，你本来查找的是“按”，但是却找到“安”字，你又得向后翻一两页，在计算机里面也是一样道理的。</p>
+
+<p>但哈希冲突是无可避免的，为什么这么说呢，因为你如果要完全避开这种情况，你只能每个字典去新开一个页，然后每个字在索引里面都有对应的页码，这就可以避免冲突。但是会导致空间增大（每个字都有一页）。　既然无法避免，就只能尽量减少冲突带来的损失</p>
+
+<h4 id="哈希冲突解决办法">哈希冲突解决办法</h4>
+
+<p>　　 如果遇到冲突，哈希表一般是怎么解决的呢？具体方法有很多，百度也会有一堆，最常用的就是</p>
+
+<p>​	闭散列方法(开放地址法)和<strong>分离链表法</strong>。</p>
+
+<hr />
+
+<h1 id="七-反射">七 反射</h1>
+
+<h3 id="1-什么是反射">1 什么是反射？</h3>
+
+<p><strong>反射前提</strong>：jvm已经加载这个类，就可以通过类名来寻找到这个类的所有相关信息</p>
+
+<p><strong>比如：</strong> 脑海中有葫芦娃的记忆，一提到葫芦娃或者让我看到葫芦娃图片，就想起来葫芦娃的形象、外貌等等</p>
+
+<p><strong>反射功能</strong></p>
+
+<p><strong>反射机制：</strong>允许程序在执行期借助于Reflection APL 取得任何类的内部信息，并<strong>能直接操作任意对象的内部属性和方法</strong>，比如得到：某个类的属性、方法、构造器、某个类到底实现了哪些接口</p>
+
+<p><strong>比如：通过反射 可以强制调用私有属性、方法、构造器</strong></p>
+
+<p>###</p>
+
+<hr />
+
+<h3 id="2-动态代理是什么有哪些应用">2. 动态代理是什么？有哪些应用？</h3>
+
+<hr />
+
+<h3 id="3-怎么实现动态代理">3. 怎么实现动态代理</h3>
+
+<hr />
+
+<h1 id="八-io流">八 Io流</h1>
+
+<h3 id="1什么是io流">1.什么是io流？</h3>
+
+<p>IO流用来处理设备之间的数据传输</p>
+
+<p>在Java程序，对数据的输入输出操作都是以流（stream）方式进行</p>
+
+<p>java.io包下提供了各种流的接口，用以获取不同种类的数据，并通过标准方法输入输出数据</p>
+
+<p><strong>输入input:</strong> 读取外部数据（磁盘 光盘等存储设备数据）到程序内存中</p>
+
+<p><strong>输出output</strong> : 将程序（内存）数据输出到磁盘、光盘等存储设备中</p>
+
+<h3 id="2java-中-io-流分为几种">2.java 中 IO 流分为几种？</h3>
+
+<p>按操作数据单位：	字节流、 字符流</p>
+
+<p>按数据流向：输入流、输出流</p>
+
+<p>按流角色：节点流 、处理流</p>
+
+<p><strong>字符流和字节流区别</strong>
+区别是他们的的处理方式不同</p>
+
+<p>字节流采用ASCII编码,主要用在处理二进制数据，它是按字<strong>节来处理</strong>的但实际中很多的数据是<strong>文本</strong>，又提出了字符流的概念，采用Unicode编码.它是按虚拟机的encode来处理，也就是要进行字符集的转化</p>
+
+<p><strong>结论：</strong>只要是纯文本数据优先使用字符流，除此之外都使用字节流</p>
+
+<p><strong>缓冲流</strong> （处理流之一）  访问文件字节字符等这种操作 是基于硬盘的 ，读写速度慢，java提供了一种缓冲流来实现 ，是基于内存    写出的数据先在内存中缓存，使用flush(）将会把内存数据立刻写出</p>
+
+<p><strong>转换流</strong>（处理流之一）字节流和字符流之间转换</p>
+
+<p><strong>对象流</strong>（处理流之一） 当使用对象流写入或者读取对象的时候，必须保证该对象是序列化的，这样是为了保证对象能够正确的写入文件，并能够把对象正确的读回程序</p>
+
+<p>所谓的<strong>对象的序列化</strong>就是将对象转换成二进制数据流的一种实现手段，通过将对象序列化，可以方便的实现对象的传输及保存。在Java中提供了ObejctInputStream和ObjectOutputStream这两个类用于序列化对象的操作。</p>
+
+<hr />
+
+<h3 id="3什么是-java-序列化什么情况下需要序列化">3.什么是 java 序列化？什么情况下需要序列化？</h3>
+
+<p>序列化和反序列化针对的是<strong>对象各种属性</strong>，不包括<strong>类的属性</strong></p>
+
+<p><strong>序列化（Serialize)</strong>： 将 Java 对象转换成字节流的过程</p>
+
+<p><strong>反序列化(Deserialize)</strong>  将字节流转换成 Java 对象的过程。</p>
+
+<p>当 J<strong>ava 对象需要在网络上传输</strong> 或者 <strong>持久化存储到文件中</strong>时，就需要对 Java 对象进行序列化处理</p>
+
+<p>序列化的实现：类实现 Serializable 接口，这个接口没有需要实现的方法。实现 Serializable 接口是为了告诉 jvm 这个类的对象可以被序列化。</p>
+
+<p><strong>注意事项：</strong></p>
+
+<ul>
+  <li>某个类可以被序列化，则其子类也可以被序列化</li>
+  <li>声明为 static 和 transient 的成员变量，不能被序列化。static 成员变量是描述类级别的属性，transient 表示临时数据</li>
+  <li>反序列化读取序列化对象的顺序要保持一致</li>
+</ul>
+
+<hr />
+
+<h3 id="4bionioaio-有什么区别">4.BIO、NIO、AIO 有什么区别？</h3>
+
+<p>BIO是一个连接一个线程。</p>
+
+<p>NIO是一个请求一个线程。</p>
+
+<p>AIO是一个有效请求一个线程。</p>
+
+<p>.BIO(同步 、阻塞)</p>
+
+<p>NIO(同步 、非阻塞)</p>
+
+<p>AIO (异步  、非阻塞)</p>
+
+<p>来个例子理解一下概念，以银行取款为例：</p>
+
+<ul>
+  <li>同步 ： 自己亲自出马持银行卡到银行取钱（使用同步IO时，Java自己处理IO读写）；</li>
+  <li>异步 ： 委托一小弟拿银行卡到银行取钱，然后给你（使用异步IO时，Java将IO读写委托给OS处理，需要将数据缓冲区地址和大小传给OS(银行卡和密码)，OS需要支持异步IO操作API）；</li>
+  <li>阻塞 ： ATM排队取款，你只能等待（使用阻塞IO时，Java调用会一直阻塞到读写完成才返回）；</li>
+  <li>非阻塞 ： 柜台取款，取个号，然后坐在椅子上做其它事，等号广播会通知你办理，没到号你就不能去，你可以不断问大堂经理排到了没有，大堂经理如果说还没到你就不能去（使用非阻塞IO时，如果不能读写Java调用会马上返回，当IO事件分发器会通知可读写时再继续进行读写，不断循环直到读写完成）</li>
+</ul>
+
+<hr />
+
+<h3 id="5file的常用方法都有哪些">5.File的常用方法都有哪些？</h3>
+
+<ul>
+  <li>Files.exists()   检测文件路径是否存在</li>
+  <li>Files.createFile()创建文件</li>
+  <li>Files.createDirectory()创建文件夹</li>
+  <li>Files.delete()   删除文件或者目录</li>
+  <li>Files.copy()   复制文件</li>
+  <li>Files.move()  移动文件</li>
+  <li>Files.size（）查看文件个数</li>
+  <li>Files.read()  读取文件</li>
+  <li>Files.write()写入文件</li>
+</ul>
+
+<hr />
+
+<h3 id="6file类">6：File类</h3>
+
+<p>计算机操作系统中的文件和文件夹，</p>
+
+<p>file能 增加 修改 删除</p>
+
+<p>但FIie不能访问文件内容本身，如果需要访问文件内容本身，则需要使用输入输出流</p>
+
+<hr />
+
+<h1 id="九-对象拷贝">九 对象拷贝</h1>
+
+<h3 id="1为什么要使用克隆">1.为什么要使用克隆？</h3>
+
+<hr />
+
+<h3 id="2如何实现对象克隆">2.如何实现对象克隆？</h3>
+
+<p>###</p>
+
+<hr />
+
+<h3 id="3深拷贝和浅拷贝区别是什么">3深拷贝和浅拷贝区别是什么？</h3>
+
+<hr />
+
+<h1 id="十多线程-高并发">十多线程 （高并发）</h1>
+
+:ET
